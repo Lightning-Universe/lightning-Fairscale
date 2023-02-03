@@ -14,7 +14,6 @@
 import os
 from unittest import mock
 
-import pytest
 import torch
 from lightning_utilities.core.rank_zero import rank_zero_only
 from pytorch_lightning import Trainer
@@ -29,15 +28,9 @@ def test_ranks_available_manual_strategy_selection(_):
     num_nodes = 2
     for i, (cluster, variables, expected) in enumerate(environment_combinations()):
         with mock.patch.dict(os.environ, variables):
-            if i == 0:
-                with pytest.deprecated_call(match="FairScale has been deprecated in v1.9.0"):
-                    strategy = DDPShardedStrategy(
-                        parallel_devices=[torch.device("cuda", 1), torch.device("cuda", 2)], cluster_environment=cluster
-                    )
-            else:
-                strategy = DDPShardedStrategy(
-                    parallel_devices=[torch.device("cuda", 1), torch.device("cuda", 2)], cluster_environment=cluster
-                )
+            strategy = DDPShardedStrategy(
+                parallel_devices=[torch.device("cuda", 1), torch.device("cuda", 2)], cluster_environment=cluster
+            )
             trainer = Trainer(strategy=strategy, num_nodes=num_nodes)
             assert rank_zero_only.rank == expected["global_rank"]
             assert trainer.global_rank == expected["global_rank"]

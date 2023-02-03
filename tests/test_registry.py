@@ -18,14 +18,11 @@ from pytorch_lightning.strategies import StrategyRegistry
 from pl_fairscale.strategies import DDPFullyShardedStrategy, DDPShardedStrategy, DDPSpawnShardedStrategy
 
 
-def test_fsdp_strategy_registry():
-    strategy = "fsdp"
-
+def test_fsdp_strategy_registry(strategy: str = "fsdp"):
     assert strategy in StrategyRegistry
     assert StrategyRegistry[strategy]["strategy"] == DDPFullyShardedStrategy
 
-    with pytest.deprecated_call(match="FairScale has been deprecated in v1.9.0"):
-        trainer = Trainer(strategy=strategy)
+    trainer = Trainer(strategy=strategy)
 
     assert isinstance(trainer.strategy, DDPFullyShardedStrategy)
 
@@ -38,8 +35,7 @@ def test_fsdp_strategy_registry():
     ],
 )
 def test_ddp_find_unused_parameters_strategy_registry(tmpdir, strategy_name, strategy, expected_init_params):
-    with pytest.deprecated_call(match="FairScale has been deprecated in v1.9.0"):
-        trainer = Trainer(default_root_dir=tmpdir, strategy=strategy_name)
+    trainer = Trainer(default_root_dir=tmpdir, strategy=strategy_name)
     assert isinstance(trainer.strategy, strategy)
     assert strategy_name in StrategyRegistry
     assert StrategyRegistry[strategy_name]["init_params"] == expected_init_params

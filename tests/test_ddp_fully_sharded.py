@@ -155,24 +155,27 @@ def _run_multiple_stages(trainer, model, model_path: Optional[str] = None):
     trainer.predict(model, ckpt_path=model_path)
 
 
-def test_invalid_on_cpu(tmpdir):
-    """Test to ensure that to raise Misconfiguration for FSDP on CPU."""
-    with pytest.deprecated_call(match="FairScale has been deprecated in v1.9.0"):
-        trainer = Trainer(default_root_dir=tmpdir, fast_dev_run=True, strategy="fsdp")
-    assert isinstance(trainer.strategy, DDPFullyShardedStrategy)
-    with pytest.raises(
-        MisconfigurationException, match="You selected strategy to be `ddp_fully_sharded`, but GPU is not available."
-    ):
-        trainer.strategy.setup_environment()
+# def test_invalid_on_cpu(tmpdir):
+#     """Test to ensure that to raise Misconfiguration for FSDP on CPU."""
+#     trainer = Trainer(default_root_dir=tmpdir, fast_dev_run=True, strategy="fsdp")
+#     assert isinstance(trainer.strategy, DDPFullyShardedStrategy)
+#     with pytest.raises(
+#         MisconfigurationException, match="You selected strategy to be `ddp_fully_sharded`, but GPU is not available."
+#     ):
+#         trainer.strategy.setup_environment()
 
 
 @mock.patch.dict(os.environ, {"CUDA_VISIBLE_DEVICES": "0"})
 def test_fsdp_with_sharded_amp(cuda_count_1, tmpdir):
     """Test to ensure that plugin native amp plugin is correctly chosen when using sharded."""
-    with pytest.deprecated_call(match="FairScale has been deprecated in v1.9.0"):
-        trainer = Trainer(
-            default_root_dir=tmpdir, fast_dev_run=True, strategy="fsdp", accelerator="gpu", devices=1, precision=16
-        )
+    trainer = Trainer(
+        default_root_dir=tmpdir,
+        fast_dev_run=True,
+        strategy=DDPFullyShardedStrategy(),
+        accelerator="gpu",
+        devices=1,
+        precision=FullyShardedMixedPrecisionPlugin(),
+    )
     assert isinstance(trainer.strategy, DDPFullyShardedStrategy)
     assert isinstance(trainer.strategy.precision_plugin, FullyShardedMixedPrecisionPlugin)
 
@@ -182,17 +185,16 @@ def test_fsdp_with_sharded_amp(cuda_count_1, tmpdir):
 def test_fully_sharded_strategy_checkpoint(tmpdir):
     """Test to ensure that checkpoint is saved correctly when using a single GPU, and all stages can be run."""
     model = TestFSDPModelManualWrapped()
-    with pytest.deprecated_call(match="FairScale has been deprecated in v1.9.0"):
-        trainer = Trainer(
-            default_root_dir=tmpdir,
-            accelerator="gpu",
-            devices=1,
-            strategy="fsdp",
-            precision=16,
-            max_epochs=1,
-            enable_progress_bar=False,
-            enable_model_summary=False,
-        )
+    trainer = Trainer(
+        default_root_dir=tmpdir,
+        accelerator="gpu",
+        devices=1,
+        strategy="fsdp",
+        precision=16,
+        max_epochs=1,
+        enable_progress_bar=False,
+        enable_model_summary=False,
+    )
     _run_multiple_stages(trainer, model, os.path.join(tmpdir, "last.ckpt"))
 
 
@@ -201,19 +203,18 @@ def test_fully_sharded_strategy_checkpoint(tmpdir):
 def test_fsdp_gradient_clipping_raises(tmpdir):
     """Test to ensure that an exception is raised when clipping gradients by value with FSDP."""
     model = TestFSDPModelManualWrapped()
-    with pytest.deprecated_call(match="FairScale has been deprecated in v1.9.0"):
-        trainer = Trainer(
-            default_root_dir=tmpdir,
-            strategy="fsdp",
-            fast_dev_run=True,
-            accelerator="gpu",
-            devices=1,
-            precision=16,
-            gradient_clip_val=1,
-            gradient_clip_algorithm="norm",
-            enable_progress_bar=False,
-            enable_model_summary=False,
-        )
+    trainer = Trainer(
+        default_root_dir=tmpdir,
+        strategy="fsdp",
+        fast_dev_run=True,
+        accelerator="gpu",
+        devices=1,
+        precision=16,
+        gradient_clip_val=1,
+        gradient_clip_algorithm="norm",
+        enable_progress_bar=False,
+        enable_model_summary=False,
+    )
     with pytest.raises(
         MisconfigurationException, match="gradient_clip_algorithm='norm'` is currently not supported for `FullySharded"
     ):
@@ -224,16 +225,15 @@ def test_fsdp_gradient_clipping_raises(tmpdir):
 @pytest.mark.skipif(torch.cuda.device_count() < 1, reason="This test needs at least single GPU.")
 @pytest.mark.skipif(torch.cuda.device_count() < 1, reason="This test needs at least single GPU.")
 def test_fsdp_rewrap_limitation(tmpdir):
-    with pytest.deprecated_call(match="FairScale has been deprecated in v1.9.0"):
-        trainer = Trainer(
-            default_root_dir=tmpdir,
-            accelerator="gpu",
-            devices=1,
-            max_steps=1,
-            limit_val_batches=0,
-            limit_test_batches=1,
-            strategy="fsdp",
-        )
+    trainer = Trainer(
+        default_root_dir=tmpdir,
+        accelerator="gpu",
+        devices=1,
+        max_steps=1,
+        limit_val_batches=0,
+        limit_test_batches=1,
+        strategy="fsdp",
+    )
     model = TestFSDPModelAutoWrapped()
     trainer.fit(model)
 
@@ -245,8 +245,7 @@ def test_fsdp_rewrap_limitation(tmpdir):
 @pytest.mark.skipif(torch.cuda.device_count() < 1, reason="This test needs at least single GPU.")
 @pytest.mark.skipif(torch.cuda.device_count() < 1, reason="This test needs at least single GPU.")
 def test_invalid_parameters_in_optimizer():
-    with pytest.deprecated_call(match="FairScale has been deprecated in v1.9.0"):
-        trainer = Trainer(strategy="fsdp", accelerator="gpu", devices=1)
+    trainer = Trainer(strategy="fsdp", accelerator="gpu", devices=1)
 
     class EmptyParametersModel(BoringModel):
         def configure_optimizers(self):

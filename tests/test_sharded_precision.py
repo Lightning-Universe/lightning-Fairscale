@@ -28,8 +28,7 @@ from pl_fairscale.precision import ShardedMixedPrecisionPlugin
     ],
 )
 def test_sharded_precision_scaler(precision, scaler, expected):
-    with pytest.deprecated_call(match="FairScale has been deprecated in v1.9.0"):
-        plugin = ShardedMixedPrecisionPlugin(precision=precision, scaler=scaler, device="cuda")
+    plugin = ShardedMixedPrecisionPlugin(precision=precision, scaler=scaler, device="cuda")
     if expected:
         assert isinstance(plugin.scaler, expected)
     else:
