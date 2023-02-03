@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macOS-10.15, windows-2019]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
         python-version: [3.9]
         requires: ['oldest', 'latest']
 
@@ -30,12 +30,6 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-
-    # Github Actions: Run step on specific OS: https://stackoverflow.com/a/57948488/4521646
-    - name: Setup macOS
-      if: runner.os == 'macOS'
-      run: |
-        brew install libomp  # https://github.com/pytorch/pytorch/issues/20030
 
     - name: Set min. dependencies
       if: matrix.requires == 'oldest'
@@ -54,29 +48,19 @@ jobs:
       with:
         path: ${{ steps.pip-cache.outputs.dir }}
         key: ${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.requires }}-pip-${{ hashFiles('requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.requires }}-pip-
+        restore-keys: ${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.requires }}-pip-
 
     - name: Install package & dependencies
       run: |
         pip --version
-        pip install -e . -U -q -r tests/requirements.txt --find-links https://download.pytorch.org/whl/cpu/torch_stable.html
+        pip install -e . -U -q -r tests/requirements.txt \
+          --find-links https://download.pytorch.org/whl/cpu/torch_stable.html
         pip list
 
-    - name: Tests
-      run: |
-        coverage run --source pl_fairscale -m pytest src tests -v \
-          --junitxml=junit/test-results-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.requires }}.xml
-
-    - name: Upload pytest test results
-      uses: actions/upload-artifact@v3
-      with:
-        name: pytest-results-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.requires }}
-        path: junit/test-results-${{ runner.os }}-${{ matrix.python-version }}-${{ matrix.requires }}.xml
-      if: failure()
+    - name: Testing
+      run: coverage run --source pl_fairscale -m pytest src tests -v
 
     - name: Statistics
-      if: success()
       run: |
         coverage report
         coverage xml
