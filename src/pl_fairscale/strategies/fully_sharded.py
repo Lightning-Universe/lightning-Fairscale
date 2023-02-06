@@ -15,12 +15,13 @@ import contextlib
 import logging
 from typing import Any, Dict, Generator, List, Optional
 
-import pytorch_lightning as pl
 import torch
 from fairscale.nn import default_auto_wrap_policy, enable_wrap
 from fairscale.nn.data_parallel import FullyShardedDataParallel
 from lightning_fabric.plugins import CheckpointIO, ClusterEnvironment
 from lightning_fabric.utilities.optimizer import _optimizers_to_device
+from pytorch_lightning import LightningModule, Trainer
+from pytorch_lightning.accelerators import Accelerator
 from pytorch_lightning.overrides.base import _LightningModuleWrapperBase
 from pytorch_lightning.plugins.precision import PrecisionPlugin
 from pytorch_lightning.strategies.ddp import DDPStrategy
@@ -95,7 +96,7 @@ class DDPFullyShardedStrategy(DDPStrategy):
 
     def __init__(
         self,
-        accelerator: Optional["pl.accelerators.Accelerator"] = None,
+        accelerator: Optional[Accelerator] = None,
         cpu_offload: bool = False,
         flatten_parameters: bool = True,
         reshard_after_forward: bool = True,
@@ -141,7 +142,7 @@ class DDPFullyShardedStrategy(DDPStrategy):
         assert self.model is not None
         return self.model.state_dict()
 
-    def connect(self, model: "pl.LightningModule") -> None:
+    def connect(self, model: LightningModule) -> None:
         """Call by the accelerator to connect the accelerator and the model with this plugin."""
         # TODO: Wait for this issue to resolve and remove this blocker
         # https://github.com/facebookresearch/fairscale/issues/648
@@ -162,7 +163,7 @@ class DDPFullyShardedStrategy(DDPStrategy):
             )
         super().setup_distributed()
 
-    def setup(self, trainer: "pl.Trainer") -> None:
+    def setup(self, trainer: Trainer) -> None:
         assert self.accelerator
         self.accelerator.setup(trainer)
 
@@ -171,7 +172,7 @@ class DDPFullyShardedStrategy(DDPStrategy):
             self.model = self._layer_sync.apply(self.model)
 
         self.configure_ddp()
-        assert isinstance(self.model, pl.LightningModule)
+        assert isinstance(self.model, LightningModule)
         self.model = _DDPFullyShardedStrategyModuleWrapper(self.model)
         assert self.lightning_module is not None
         if not is_overridden("configure_sharded_model", self.lightning_module):
@@ -182,7 +183,7 @@ class DDPFullyShardedStrategy(DDPStrategy):
 
         self.setup_precision_plugin()
 
-    def setup_optimizers(self, trainer: "pl.Trainer") -> None:
+    def setup_optimizers(self, trainer: Trainer) -> None:
         invalid_params_error = False
         try:
             super().setup_optimizers(trainer)

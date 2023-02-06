@@ -72,7 +72,7 @@ def test_ddp_sharded_precision_16_clip_gradients(mock_oss_clip_grad_norm, clip_v
         strategy=DDPSpawnShardedStrategy(),
         accelerator="gpu",
         devices=1,
-        precision=ShardedMixedPrecisionPlugin(),
+        precision=ShardedMixedPrecisionPlugin(precision="bf16"),
         fast_dev_run=True,
         gradient_clip_val=clip_val,
     )

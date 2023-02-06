@@ -13,11 +13,12 @@
 # limitations under the License.
 from typing import Any
 
-from pytorch_lightning.plugins.precision.sharded_native_amp import ShardedNativeMixedPrecisionPlugin
 from pytorch_lightning.utilities.exceptions import MisconfigurationException
 
+from pl_fairscale.precision.sharded_amp import ShardedMixedPrecisionPlugin
 
-class FullyShardedMixedPrecisionPlugin(ShardedNativeMixedPrecisionPlugin):
+
+class FullyShardedMixedPrecisionPlugin(ShardedMixedPrecisionPlugin):
     """Native AMP for Fully Sharded Training."""
 
     def clip_grad_by_norm(self, *_: Any, **__: Any) -> None:

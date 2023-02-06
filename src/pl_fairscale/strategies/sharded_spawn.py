@@ -14,10 +14,10 @@
 from contextlib import contextmanager
 from typing import Dict, Generator, List, Tuple
 
-import pytorch_lightning as pl
 from fairscale.nn.data_parallel.sharded_ddp import ShardedDataParallel
 from fairscale.optim import OSS
 from lightning_fabric.utilities.optimizer import _optimizers_to_device
+from pytorch_lightning import LightningModule
 from pytorch_lightning.core.optimizer import LightningOptimizer
 from pytorch_lightning.overrides.base import _LightningModuleWrapperBase, _LightningPrecisionModuleWrapperBase
 from pytorch_lightning.overrides.fairscale import _FAIRSCALE_AVAILABLE, _reinit_optimizers_with_oss
@@ -34,7 +34,7 @@ class DDPSpawnShardedStrategy(DDPSpawnStrategy):
 
     strategy_name = "ddp_sharded_spawn"
 
-    def connect(self, model: "pl.LightningModule") -> None:
+    def connect(self, model: LightningModule) -> None:
         if not _FAIRSCALE_AVAILABLE:  # pragma: no cover
             raise MisconfigurationException(
                 "`DDPSpawnShardedStrategy` requires `fairscale` to be installed."
@@ -46,7 +46,7 @@ class DDPSpawnShardedStrategy(DDPSpawnStrategy):
         # set up optimizers after the wrapped module has been moved to the device
         assert self.lightning_module is not None
         self.setup_optimizers(self.lightning_module.trainer)
-        assert isinstance(self.model, (pl.LightningModule, _LightningPrecisionModuleWrapperBase))
+        assert isinstance(self.model, (LightningModule, _LightningPrecisionModuleWrapperBase))
         self.model, self.optimizers = self._setup_model_and_optimizers(
             model=_LightningModuleWrapperBase(self.model), optimizers=self.optimizers
         )

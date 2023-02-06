@@ -11,6 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from typing import Union
+
 import pytest
 import torch
 from fairscale.optim.grad_scaler import ShardedGradScaler
@@ -27,7 +29,7 @@ from pl_fairscale.precision import ShardedMixedPrecisionPlugin
         (32, None, None),
     ],
 )
-def test_sharded_precision_scaler(precision, scaler, expected):
+def test_sharded_precision_scaler(precision: Union[str, int], scaler, expected):
     plugin = ShardedMixedPrecisionPlugin(precision=precision, scaler=scaler, device="cuda")
     if expected:
         assert isinstance(plugin.scaler, expected)

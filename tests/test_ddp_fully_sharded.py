@@ -223,7 +223,6 @@ def test_fsdp_gradient_clipping_raises(tmpdir):
 
 @pytest.mark.skip(reason="This test is meant to be standalone.")  # todo
 @pytest.mark.skipif(torch.cuda.device_count() < 1, reason="This test needs at least single GPU.")
-@pytest.mark.skipif(torch.cuda.device_count() < 1, reason="This test needs at least single GPU.")
 def test_fsdp_rewrap_limitation(tmpdir):
     trainer = Trainer(
         default_root_dir=tmpdir,

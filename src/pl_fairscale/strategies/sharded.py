@@ -14,10 +14,10 @@
 from contextlib import contextmanager
 from typing import Dict, Generator, List, Tuple
 
-import pytorch_lightning as pl
 from fairscale.nn.data_parallel.sharded_ddp import ShardedDataParallel
 from fairscale.optim import OSS
 from lightning_fabric.utilities.optimizer import _optimizers_to_device
+from pytorch_lightning import LightningModule, Trainer
 from pytorch_lightning.core.optimizer import LightningOptimizer
 from pytorch_lightning.overrides.base import _LightningModuleWrapperBase, _LightningPrecisionModuleWrapperBase
 from pytorch_lightning.overrides.fairscale import _FAIRSCALE_AVAILABLE, _reinit_optimizers_with_oss
@@ -35,7 +35,7 @@ class DDPShardedStrategy(DDPStrategy):
     strategy_name = "ddp_sharded"
     _REDUCE_BUFFER_SIZE_DEFAULT: int = 2**23  # 8M
 
-    def connect(self, model: "pl.LightningModule") -> None:
+    def connect(self, model: LightningModule) -> None:
         if not _FAIRSCALE_AVAILABLE:  # pragma: no cover
             raise MisconfigurationException(
                 "`DDPShardedStrategy` requires `fairscale` to be installed."
@@ -43,7 +43,7 @@ class DDPShardedStrategy(DDPStrategy):
             )
         return super().connect(model)
 
-    def setup(self, trainer: "pl.Trainer") -> None:
+    def setup(self, trainer: Trainer) -> None:
         assert self.accelerator is not None
         self.accelerator.setup(trainer)
 
@@ -65,7 +65,7 @@ class DDPShardedStrategy(DDPStrategy):
         self._set_ddp_kwargs()
         assert self.lightning_module is not None
         self.setup_optimizers(self.lightning_module.trainer)
-        assert isinstance(self.model, (pl.LightningModule, _LightningPrecisionModuleWrapperBase))
+        assert isinstance(self.model, (LightningModule, _LightningPrecisionModuleWrapperBase))
         self.model, self.optimizers = self._setup_model_and_optimizers(
             model=_LightningModuleWrapperBase(self.model),
             optimizers=self.optimizers,
