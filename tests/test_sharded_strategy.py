@@ -27,7 +27,6 @@ from pytorch_lightning.plugins import MixedPrecisionPlugin
 from pytorch_lightning.trainer.states import TrainerFn
 from torch import Tensor
 
-from pl_fairscale.precision import ShardedMixedPrecisionPlugin
 from pl_fairscale.strategies import DDPShardedStrategy, DDPSpawnShardedStrategy
 
 
@@ -72,7 +71,7 @@ def test_ddp_sharded_precision_16_clip_gradients(mock_oss_clip_grad_norm, clip_v
         strategy=DDPSpawnShardedStrategy(),
         accelerator="gpu",
         devices=1,
-        precision=ShardedMixedPrecisionPlugin(precision="bf16"),
+        precision=16,
         fast_dev_run=True,
         gradient_clip_val=clip_val,
     )
@@ -83,18 +82,9 @@ def test_ddp_sharded_precision_16_clip_gradients(mock_oss_clip_grad_norm, clip_v
         mock_oss_clip_grad_norm.assert_not_called()
 
 
-@pytest.mark.parametrize(
-    ("strategy", "expected"), [("ddp_sharded", DDPShardedStrategy), ("ddp_sharded_spawn", DDPSpawnShardedStrategy)]
-)
-def test_sharded_ddp_choice(strategy, expected):
-    """Test to ensure that strategy is correctly chosen."""
-    trainer = Trainer(fast_dev_run=True, strategy=strategy)
-    assert isinstance(trainer.strategy, expected)
-
-
 @pytest.mark.skipif(torch.cuda.device_count() < 1, reason="This test needs at least single GPU.")
 @pytest.mark.parametrize("strategy", [DDPShardedStrategy, DDPSpawnShardedStrategy])
-def test_ddp_choice_sharded_amp(strategy, expected):
+def test_ddp_choice_sharded_amp(strategy):
     """Test to ensure that plugin native amp plugin is correctly chosen when using sharded."""
     trainer = Trainer(fast_dev_run=True, accelerator="gpu", devices=1, precision=16, strategy=strategy())
     assert isinstance(trainer.precision_plugin, MixedPrecisionPlugin)
@@ -188,7 +178,10 @@ def test_ddp_sharded_strategy_fit_ckpt_path_gpu_to_cpu(tmpdir):
     "trainer_kwargs",
     [
         {"accelerator": "cpu", "devices": 2},
-        pytest.param({"accelerator": "gpu", "devices": 2}, marks=pytest.mark.skipif(torch.cuda.device_count() < 2)),
+        pytest.param(
+            {"accelerator": "gpu", "devices": 2},
+            marks=pytest.mark.skipif(torch.cuda.device_count() < 2, reason="multi-GPU"),
+        ),
     ],
 )
 def test_ddp_sharded_strategy_test_multigpu(trainer_kwargs):

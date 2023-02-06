@@ -174,7 +174,7 @@ def test_fsdp_with_sharded_amp(cuda_count_1, tmpdir):
         strategy=DDPFullyShardedStrategy(),
         accelerator="gpu",
         devices=1,
-        precision=FullyShardedMixedPrecisionPlugin(),
+        precision=16,
     )
     assert isinstance(trainer.strategy, DDPFullyShardedStrategy)
     assert isinstance(trainer.strategy.precision_plugin, FullyShardedMixedPrecisionPlugin)
@@ -189,8 +189,8 @@ def test_fully_sharded_strategy_checkpoint(tmpdir):
         default_root_dir=tmpdir,
         accelerator="gpu",
         devices=1,
-        strategy=FullyShardedDataParallel(),
-        precision=FullyShardedMixedPrecisionPlugin(),
+        strategy=DDPFullyShardedStrategy(),
+        precision=FullyShardedMixedPrecisionPlugin(precision=16),
         max_epochs=1,
         enable_progress_bar=False,
         enable_model_summary=False,
@@ -205,11 +205,11 @@ def test_fsdp_gradient_clipping_raises(tmpdir):
     model = TestFSDPModelManualWrapped()
     trainer = Trainer(
         default_root_dir=tmpdir,
-        strategy=FullyShardedDataParallel(),
+        strategy=DDPFullyShardedStrategy(),
         fast_dev_run=True,
         accelerator="gpu",
         devices=1,
-        precision=FullyShardedMixedPrecisionPlugin(),
+        precision=FullyShardedMixedPrecisionPlugin(precision=16),
         gradient_clip_val=1,
         gradient_clip_algorithm="norm",
         enable_progress_bar=False,
@@ -231,7 +231,7 @@ def test_fsdp_rewrap_limitation(tmpdir):
         max_steps=1,
         limit_val_batches=0,
         limit_test_batches=1,
-        strategy=FullyShardedDataParallel(),
+        strategy=DDPFullyShardedStrategy(),
     )
     model = TestFSDPModelAutoWrapped()
     trainer.fit(model)
@@ -244,7 +244,7 @@ def test_fsdp_rewrap_limitation(tmpdir):
 @pytest.mark.skipif(torch.cuda.device_count() < 1, reason="This test needs at least single GPU.")
 @pytest.mark.skipif(torch.cuda.device_count() < 1, reason="This test needs at least single GPU.")
 def test_invalid_parameters_in_optimizer():
-    trainer = Trainer(strategy=FullyShardedDataParallel(), accelerator="gpu", devices=1)
+    trainer = Trainer(strategy=DDPFullyShardedStrategy(), accelerator="gpu", devices=1)
 
     class EmptyParametersModel(BoringModel):
         def configure_optimizers(self):
