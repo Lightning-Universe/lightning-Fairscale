@@ -166,7 +166,7 @@ def _run_multiple_stages(trainer, model, model_path: Optional[str] = None):
 
 
 @mock.patch.dict(os.environ, {"CUDA_VISIBLE_DEVICES": "0"})
-def test_fsdp_with_sharded_amp(cuda_count_1, tmpdir):
+def test_fsdp_with_sharded_amp(tmpdir):
     """Test to ensure that plugin native amp plugin is correctly chosen when using sharded."""
     trainer = Trainer(
         default_root_dir=tmpdir,
