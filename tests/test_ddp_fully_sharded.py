@@ -21,8 +21,8 @@ from pytorch_lightning import Trainer
 from pytorch_lightning.demos.boring_classes import BoringModel
 from pytorch_lightning.utilities.exceptions import MisconfigurationException
 
-from pl_fairscale.precision import FullyShardedMixedPrecisionPlugin
-from pl_fairscale.strategies import DDPFullyShardedStrategy
+from lightning_fairscale.precision import FullyShardedMixedPrecisionPlugin
+from lightning_fairscale.strategies import DDPFullyShardedStrategy
 
 
 class TestFSDPModelManualWrapped(BoringModel):
