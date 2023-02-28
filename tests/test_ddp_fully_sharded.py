@@ -165,7 +165,7 @@ def _run_multiple_stages(trainer, model, model_path: Optional[str] = None):
 #         trainer.strategy.setup_environment()
 
 
-@mock.patch.dict(os.environ, {"CUDA_VISIBLE_DEVICES": "0"})
+@pytest.mark.skipif(torch.cuda.device_count() < 1, reason="This test needs at least single GPU.")
 def test_fsdp_with_sharded_amp(tmpdir):
     """Test to ensure that plugin native amp plugin is correctly chosen when using sharded."""
     trainer = Trainer(
