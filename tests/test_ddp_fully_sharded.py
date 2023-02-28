@@ -13,7 +13,6 @@
 # limitations under the License.
 import os
 from typing import Any, Dict, Optional
-from unittest import mock
 
 import pytest
 import torch
