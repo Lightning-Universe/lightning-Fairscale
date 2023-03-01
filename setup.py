@@ -11,7 +11,7 @@ _PATH_SOURCE = os.path.join(_PATH_ROOT, "src")
 _PATH_README = os.path.join(_PATH_ROOT, "README.md")
 
 
-def _load_py_module(fname, pkg="pl_fairscale"):
+def _load_py_module(fname, pkg="lightning_fairscale"):
     spec = spec_from_file_location(os.path.join(pkg, fname), os.path.join(_PATH_SOURCE, pkg, fname))
     py = module_from_spec(spec)
     spec.loader.exec_module(py)
@@ -36,7 +36,7 @@ about = _load_py_module("__about__.py")
 # the goal of the project is simplicity for researchers, don't want to add too much
 # engineer specific practices
 setup(
-    name="PL-Fairscale",
+    name="lightning-Fairscale",
     version=about.__version__,
     description=about.__docs__,
     author=about.__author__,

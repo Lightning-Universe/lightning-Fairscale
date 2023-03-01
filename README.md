@@ -22,7 +22,7 @@ PyTorch will raise an error. This is required because when you use auto-wrap, th
 `lightning_module.parameters()` will return a generator with no params. This inconvenience will be addressed in the future.
 
 ```py
-from pl_fairscale.strategies import DDPFullyShardedStrategy
+from lightning_fairscale.strategies import DDPFullyShardedStrategy
 from pytorch_lightning import Trainer
 from pytorch_lightning.demos.boring_classes import BoringModel
 
@@ -47,7 +47,7 @@ Here's an example using that uses `wrap` to create your model:
 ```py
 import torch
 import torch.nn as nn
-from pl_fairscale.strategies import DDPFullyShardedStrategy
+from lightning_fairscale.strategies import DDPFullyShardedStrategy
 from pytorch_lightning import Trainer, LightningModule
 from torch.distributed.fsdp.wrap import wrap
 
@@ -85,7 +85,7 @@ You can customize the strategy configuration by adjusting the arguments of :clas
 
 ```py
 from pytorch_lightning import Trainer
-from pl_fairscale.strategies import DDPFullyShardedStrategy
+from lightning_fairscale.strategies import DDPFullyShardedStrategy
 
 native_fsdp = DDPFullyShardedStrategy(cpu_offload=True)
 trainer = Trainer(strategy=native_fsdp, accelerator="gpu", devices=4)
@@ -105,7 +105,7 @@ Enable checkpointing on large layers (like Transformers) by providing the layer 
 
 ```py
 from pytorch_lightning import Trainer
-from pl_fairscale.strategies import DDPFullyShardedStrategy
+from lightning_fairscale.strategies import DDPFullyShardedStrategy
 
 fsdp = DDPFullyShardedStrategy(
     activation_checkpointing=MyTransformerBlock,  # or pass a list with multiple types

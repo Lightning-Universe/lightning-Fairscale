@@ -18,7 +18,7 @@ import torch
 from lightning_utilities.core.rank_zero import rank_zero_only
 from pytorch_lightning import Trainer
 
-from pl_fairscale.strategies import DDPShardedStrategy
+from lightning_fairscale.strategies import DDPShardedStrategy
 from tests.helpers import environment_combinations
 
 

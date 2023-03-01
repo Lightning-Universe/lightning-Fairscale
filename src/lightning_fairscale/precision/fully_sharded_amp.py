@@ -15,7 +15,7 @@ from typing import Any
 
 from pytorch_lightning.utilities.exceptions import MisconfigurationException
 
-from pl_fairscale.precision.sharded_amp import ShardedMixedPrecisionPlugin
+from lightning_fairscale.precision.sharded_amp import ShardedMixedPrecisionPlugin
 
 
 class FullyShardedMixedPrecisionPlugin(ShardedMixedPrecisionPlugin):

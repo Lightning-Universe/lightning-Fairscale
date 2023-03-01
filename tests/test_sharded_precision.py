@@ -17,7 +17,7 @@ import pytest
 import torch
 from fairscale.optim.grad_scaler import ShardedGradScaler
 
-from pl_fairscale.precision import ShardedMixedPrecisionPlugin
+from lightning_fairscale.precision import ShardedMixedPrecisionPlugin
 
 
 @pytest.mark.parametrize(
