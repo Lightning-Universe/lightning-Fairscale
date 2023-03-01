@@ -60,8 +60,15 @@ class CheckModelRestore(ModelWithAdamOptimizer):
         return a == b
 
 
-@pytest.mark.xfail(AssertionError, reason="Expected 'clip_grad_norm' to have been called.")  # todo
-@pytest.mark.parametrize("clip_val", [0, 10])
+@pytest.mark.parametrize(
+    "clip_val",
+    [
+        0,
+        pytest.param(  # todo
+            10, marks=pytest.mark.xfail(AssertionError, reason="Expected 'clip_grad_norm' to have been called.")
+        ),
+    ],
+)
 @pytest.mark.skipif(torch.cuda.device_count() < 1, reason="This test needs at least single GPU.")
 @mock.patch("fairscale.optim.oss.OSS.clip_grad_norm")
 def test_ddp_sharded_precision_16_clip_gradients(mock_oss_clip_grad_norm, clip_val, tmpdir):
