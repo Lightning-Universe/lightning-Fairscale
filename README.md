@@ -1,6 +1,7 @@
 # Lightning extension: Fairscale
 
 [![CI testing](https://github.com/Lightning-Devel/PL-Fairscale/actions/workflows/ci-testing.yml/badge.svg?event=push)](https://github.com/Lightning-Devel/PL-Fairscale/actions/workflows/ci-testing.yml)
+[![Build Status](https://dev.azure.com/Lightning-AI/compatibility/_apis/build/status%2Fstrategies%2FLightning-Universe.lit-strategy-Fairscale?branchName=main)](https://dev.azure.com/Lightning-AI/compatibility/_build/latest?definitionId=61&branchName=main)
 [![General checks](https://github.com/Lightning-Devel/PL-Fairscale/actions/workflows/ci-checks.yml/badge.svg?event=push)](https://github.com/Lightning-Devel/PL-Fairscale/actions/workflows/ci-checks.yml)
 [![Documentation Status](https://readthedocs.org/projects/PL-Fairscale/badge/?version=latest)](https://PL-Fairscale.readthedocs.io/en/latest/?badge=latest)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Lightning-Devel/PL-Fairscale/main.svg?badge_token=mqheL1-cTn-280Vx4cJUdg)](https://results.pre-commit.ci/latest/github/Lightning-Devel/PL-Fairscale/main?badge_token=mqheL1-cTn-280Vx4cJUdg)
