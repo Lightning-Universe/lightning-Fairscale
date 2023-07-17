@@ -1,22 +1,22 @@
 # Lightning extension: Fairscale
 
-[![CI testing](https://github.com/Lightning-Devel/PL-Fairscale/actions/workflows/ci-testing.yml/badge.svg?event=push)](https://github.com/Lightning-Devel/PL-Fairscale/actions/workflows/ci-testing.yml)
-[![Build Status](https://dev.azure.com/Lightning-AI/compatibility/_apis/build/status%2Fstrategies%2FLightning-Universe.lit-strategy-Fairscale?branchName=main)](https://dev.azure.com/Lightning-AI/compatibility/_build/latest?definitionId=61&branchName=main)
-[![General checks](https://github.com/Lightning-Devel/PL-Fairscale/actions/workflows/ci-checks.yml/badge.svg?event=push)](https://github.com/Lightning-Devel/PL-Fairscale/actions/workflows/ci-checks.yml)
+[![General checks](https://github.com/Lightning-Universe/litghtning-Fairscale/actions/workflows/ci-checks.yml/badge.svg?event=push)](https://github.com/Lightning-Universe/litghtning-Fairscale/actions/workflows/ci-checks.yml)
+[![CI testing](https://github.com/Lightning-Universe/litghtning-Fairscale/actions/workflows/ci-testing.yml/badge.svg?event=push)](https://github.com/Lightning-Universe/litghtning-Fairscale/actions/workflows/ci-testing.yml)
+[![Build Status](https://dev.azure.com/Lightning-AI/compatibility/_apis/build/status%2Fstrategies%2FLightning-Universe.litghtning-Fairscale?branchName=main)](https://dev.azure.com/Lightning-AI/compatibility/_build/latest?definitionId=65&branchName=main)
 [![Documentation Status](https://readthedocs.org/projects/PL-Fairscale/badge/?version=latest)](https://PL-Fairscale.readthedocs.io/en/latest/?badge=latest)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Lightning-Devel/PL-Fairscale/main.svg?badge_token=mqheL1-cTn-280Vx4cJUdg)](https://results.pre-commit.ci/latest/github/Lightning-Devel/PL-Fairscale/main?badge_token=mqheL1-cTn-280Vx4cJUdg)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Lightning-Universe/litghtning-Fairscale/main.svg)](https://results.pre-commit.ci/latest/github/Lightning-Universe/litghtning-Fairscale/main)
 
-\* the Read-The-Docs is failing as this one leads to the public domain which requires the repo to be public too
+\* the Read-The-Docs is failing as this one leads to the public domain, which requires the repo to be public too
 
-PyTorch has it's own version of [FSDP](https://pytorch.org/docs/stable/fsdp.html) which is upstreamed from their [fairscale](https://fairscale.readthedocs.io/en/latest/api/nn/fsdp.html) project.
-It was introduced in their [v1.11.0 release](https://pytorch.org/blog/introducing-pytorch-fully-sharded-data-parallel-api/) but it is recommended to use it with PyTorch v1.12 or more and that's what
+PyTorch has it's own version of [FSDP](https://pytorch.org/docs/stable/fsdp.html), which is upstreamed from their [fairscale](https://fairscale.readthedocs.io/en/latest/api/nn/fsdp.html) project.
+It was introduced in their [v1.11.0 release](https://pytorch.org/blog/introducing-pytorch-fully-sharded-data-parallel-api/), but it is recommended to use it with PyTorch v1.12 or more, and that's what
 Lightning supports.
 
 ## Auto Wrapping
 
 Model layers should be wrapped in FSDP in a nested way to save peak memory and enable communication and computation overlapping. The
 simplest way to do it is auto wrapping, which can serve as a drop-in replacement for DDP without changing the rest of the code. You don't
-have to `wrap` layers manually as in the case of manual wrapping.
+have to `wrap` layers manually, as in the case of manual wrapping.
 
 While initializing the optimizers inside `configure_optimizers` hook, make sure to use `self.trainer.model.parameters()`, else
 PyTorch will raise an error. This is required because when you use auto-wrap, the model layers are sharded and your
@@ -92,14 +92,14 @@ native_fsdp = DDPFullyShardedStrategy(cpu_offload=True)
 trainer = Trainer(strategy=native_fsdp, accelerator="gpu", devices=4)
 ```
 
-Check out [this tutorial](https://pytorch.org/tutorials/intermediate/FSDP_tutorial.html) to learn more about the native support.
+Check out [this tutorial](https://pytorch.org/tutorials/intermediate/FSDP_tutorial.html) to learn more about native support.
 
 ______________________________________________________________________
 
 ## Activation Checkpointing
 
 Activation checkpointing reduces GPU memory usage by avoiding the storage of intermediate activation tensors in
-selected layers. The tradeoff is that computation cost for the backpropagation increases, as the dropped activations
+selected layers. The tradeoff is that the computation cost for the backpropagation increases as the dropped activations
 need to be recomputed.
 
 Enable checkpointing on large layers (like Transformers) by providing the layer class/type to the strategy:
@@ -117,5 +117,5 @@ trainer = Trainer(strategy=fsdp, accelerator="gpu", devices=4)
 ## Tests / Docs notes
 
 - We are using [Napoleon style,](https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html) and we shall use static types...
-- It is nice to se [doctest](https://docs.python.org/3/library/doctest.html) as they are also generated as examples in documentation
-- For wider and edge cases testing use [pytest parametrization](https://docs.pytest.org/en/stable/parametrize.html) :\]
+- It is nice to see [doctest](https://docs.python.org/3/library/doctest.html) as they are also generated as examples in documentation
+- For wider and edge cases testing, use [pytest parametrization](https://docs.pytest.org/en/stable/parametrize.html) :\]
