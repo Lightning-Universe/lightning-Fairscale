@@ -1,14 +1,13 @@
 # Lightning extension: Fairscale
 
-[![General checks](https://github.com/Lightning-Universe/litghtning-Fairscale/actions/workflows/ci-checks.yml/badge.svg?event=push)](https://github.com/Lightning-Universe/litghtning-Fairscale/actions/workflows/ci-checks.yml)
-[![CI testing](https://github.com/Lightning-Universe/litghtning-Fairscale/actions/workflows/ci-testing.yml/badge.svg?event=push)](https://github.com/Lightning-Universe/litghtning-Fairscale/actions/workflows/ci-testing.yml)
-[![Build Status](https://dev.azure.com/Lightning-AI/compatibility/_apis/build/status%2Fstrategies%2FLightning-Universe.litghtning-Fairscale?branchName=main)](https://dev.azure.com/Lightning-AI/compatibility/_build/latest?definitionId=65&branchName=main)
-[![Documentation Status](https://readthedocs.org/projects/PL-Fairscale/badge/?version=latest)](https://PL-Fairscale.readthedocs.io/en/latest/?badge=latest)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Lightning-Universe/litghtning-Fairscale/main.svg)](https://results.pre-commit.ci/latest/github/Lightning-Universe/litghtning-Fairscale/main)
+[![General checks](https://github.com/Lightning-Universe/lightning-Fairscale/actions/workflows/ci-checks.yml/badge.svg?event=push)](https://github.com/Lightning-Universe/lightning-Fairscale/actions/workflows/ci-checks.yml)
+[![CI testing](https://github.com/Lightning-Universe/lightning-Fairscale/actions/workflows/ci-testing.yml/badge.svg?event=push)](https://github.com/Lightning-Universe/lightning-Fairscale/actions/workflows/ci-testing.yml)
+[![Build Status](https://dev.azure.com/Lightning-AI/compatibility/_apis/build/status%2Fstrategies%2FLightning-Universe.lightning-Fairscale?branchName=main)](https://dev.azure.com/Lightning-AI/compatibility/_build/latest?definitionId=67&branchName=main)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Lightning-Universe/lightning-Fairscale/main.svg)](https://results.pre-commit.ci/latest/github/Lightning-Universe/lightning-Fairscale/main)
 
 \* the Read-The-Docs is failing as this one leads to the public domain, which requires the repo to be public too
 
-PyTorch has it's own version of [FSDP](https://pytorch.org/docs/stable/fsdp.html), which is upstreamed from their [fairscale](https://fairscale.readthedocs.io/en/latest/api/nn/fsdp.html) project.
+PyTorch has its own version of [FSDP](https://pytorch.org/docs/stable/fsdp.html), which is upstreamed from their [fairscale](https://fairscale.readthedocs.io/en/latest/api/nn/fsdp.html) project.
 It was introduced in their [v1.11.0 release](https://pytorch.org/blog/introducing-pytorch-fully-sharded-data-parallel-api/), but it is recommended to use it with PyTorch v1.12 or more, and that's what
 Lightning supports.
 
