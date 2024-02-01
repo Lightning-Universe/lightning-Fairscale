@@ -1,2 +1,2 @@
-pytorch-lightning>=1.9.0, <2.0
+pytorch-lightning>=1.9.0, <2.1.0
 fairscale>=0.4.5, <0.4.14
